@@ -7,10 +7,8 @@ package rpcclient
 import (
 	"bytes"
 	"container/list"
-	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -799,12 +797,12 @@ func (c *Client) handleSendPostMessage(jReq *jsonRequest) {
 		}
 
 		// Configure basic access authorization.
-		user, pass, err := c.config.getAuth()
-		if err != nil {
-			jReq.responseChan <- &Response{result: nil, err: err}
-			return
-		}
-		httpReq.SetBasicAuth(user, pass)
+		// // user, pass, err := c.config.getAuth()
+		// if err != nil {
+		// 	jReq.responseChan <- &Response{result: nil, err: err}
+		// 	return
+		// }
+		// httpReq.SetBasicAuth(user, pass)
 
 		httpResponse, err = c.httpClient.Do(httpReq)
 
@@ -1287,19 +1285,19 @@ type ConnConfig struct {
 	EnableBCInfoHacks bool
 }
 
-// getAuth returns the username and passphrase that will actually be used for
-// this connection.  This will be the result of checking the cookie if a cookie
-// path is configured; if not, it will be the user-configured username and
-// passphrase.
-func (config *ConnConfig) getAuth() (username, passphrase string, err error) {
-	// Try username+passphrase auth first.
-	if config.Pass != "" {
-		return config.User, config.Pass, nil
-	}
+// // getAuth returns the username and passphrase that will actually be used for
+// // this connection.  This will be the result of checking the cookie if a cookie
+// // path is configured; if not, it will be the user-configured username and
+// // passphrase.
+// func (config *ConnConfig) getAuth() (username, passphrase string, err error) {
+// 	// Try username+passphrase auth first.
+// 	if config.Pass != "" {
+// 		return config.User, config.Pass, nil
+// 	}
 
-	// If no username or passphrase is set, try cookie auth.
-	return config.retrieveCookie()
-}
+// 	// If no username or passphrase is set, try cookie auth.
+// 	return config.retrieveCookie()
+// }
 
 // retrieveCookie returns the cookie username and passphrase.
 func (config *ConnConfig) retrieveCookie() (username, passphrase string, err error) {
@@ -1326,46 +1324,46 @@ func (config *ConnConfig) retrieveCookie() (username, passphrase string, err err
 
 // newHTTPClient returns a new http client that is configured according to the
 // proxy and TLS settings in the associated connection configuration.
-func newHTTPClient(config *ConnConfig) (*http.Client, error) {
+func newHTTPClient() (*http.Client, error) {
 	// Set proxy function if there is a proxy configured.
-	var proxyFunc func(*http.Request) (*url.URL, error)
-	if config.Proxy != "" {
-		proxyURL, err := url.Parse(config.Proxy)
-		if err != nil {
-			return nil, err
-		}
-		proxyFunc = http.ProxyURL(proxyURL)
-	}
+	// var proxyFunc func(*http.Request) (*url.URL, error)
+	// if config.Proxy != "" {
+	// 	proxyURL, err := url.Parse(config.Proxy)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	proxyFunc = http.ProxyURL(proxyURL)
+	// }
 
 	// Configure TLS if needed.
-	var tlsConfig *tls.Config
-	if !config.DisableTLS {
-		if len(config.Certificates) > 0 {
-			pool := x509.NewCertPool()
-			pool.AppendCertsFromPEM(config.Certificates)
-			tlsConfig = &tls.Config{
-				RootCAs: pool,
-			}
-		}
-	}
+	// var tlsConfig *tls.Config
+	// if !config.DisableTLS {
+	// 	if len(config.Certificates) > 0 {
+	// 		pool := x509.NewCertPool()
+	// 		pool.AppendCertsFromPEM(config.Certificates)
+	// 		tlsConfig = &tls.Config{
+	// 			RootCAs: pool,
+	// 		}
+	// 	}
+	// }
 
-	parsedDialAddr, err := ParseAddressString(config.Host)
-	if err != nil {
-		return nil, err
-	}
+	// parsedDialAddr, err := ParseAddressString(config.Host)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	client := http.Client{
-		Transport: &http.Transport{
-			Proxy:           proxyFunc,
-			TLSClientConfig: tlsConfig,
-			DialContext: func(_ context.Context, _,
-				_ string) (net.Conn, error) {
+		// Transport: &http.Transport{
+		// 	Proxy:           proxyFunc,
+		// 	TLSClientConfig: tlsConfig,
+		// 	DialContext: func(_ context.Context, _,
+		// 		_ string) (net.Conn, error) {
 
-				return net.Dial(
-					parsedDialAddr.Network(),
-					parsedDialAddr.String(),
-				)
-			},
-		},
+		// 		return net.Dial(
+		// 			parsedDialAddr.Network(),
+		// 			parsedDialAddr.String(),
+		// 		)
+		// 	},
+		// },
 		Timeout: defaultHTTPTimeout,
 	}
 
@@ -1432,14 +1430,14 @@ func dial(config *ConnConfig) (*websocket.Conn, error) {
 
 	// The RPC server requires basic authorization, so create a custom
 	// request header with the Authorization header set.
-	user, pass, err := config.getAuth()
-	if err != nil {
-		return nil, err
-	}
-	login := user + ":" + pass
-	auth := "Basic " + base64.StdEncoding.EncodeToString([]byte(login))
+	// user, pass, err := config.getAuth()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// login := user + ":" + pass
+	// auth := "Basic " + base64.StdEncoding.EncodeToString([]byte(login))
 	requestHeader := make(http.Header)
-	requestHeader.Add("Authorization", auth)
+	// requestHeader.Add("Authorization", auth)
 	for key, value := range config.ExtraHeaders {
 		requestHeader.Add(key, value)
 	}
@@ -1489,7 +1487,7 @@ func New(config *ConnConfig, ntfnHandlers *NotificationHandlers) (*Client, error
 		start = true
 
 		var err error
-		httpClient, err = newHTTPClient(config)
+		httpClient, err = newHTTPClient()
 		if err != nil {
 			return nil, err
 		}
