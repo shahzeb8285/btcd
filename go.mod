@@ -1,5 +1,10 @@
-module github.com/shahzeb8285/btcd
+// module github.com/shahzeb8285/btcd
+replace github.com/btcsuite/btcd => github.com/shahzeb8285/btcd v0.0.0-20210819022825-2ae1ddf74ef7
 
+
+require (
+	github.com/btcsuite/btcd v0.0.0-20210819022825-2ae1ddf74ef7
+)
 require (
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
 	github.com/btcsuite/btcd/btcutil v1.1.5
