@@ -1,10 +1,5 @@
-// module github.com/shahzeb8285/btcd
-replace github.com/btcsuite/btcd => github.com/shahzeb8285/btcd v0.0.0-20210819022825-2ae1ddf74ef7
+module github.com/btcsuite/btcd
 
-
-require (
-	github.com/btcsuite/btcd v0.0.0-20210819022825-2ae1ddf74ef7
-)
 require (
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
 	github.com/btcsuite/btcd/btcutil v1.1.5
@@ -32,40 +27,41 @@ require (
 	github.com/kkdai/bstream v0.0.0-20161212061736-f391b8402d23 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
-	golang.org/x/net v0.24.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 // The retract statements below fixes an accidental push of the tags of a btcd
 // fork.
-retract (
-	v0.18.1
-	v0.18.0
-	v0.17.1
-	v0.17.0
-	v0.16.5
-	v0.16.4
-	v0.16.3
-	v0.16.2
-	v0.16.1
-	v0.16.0
+// retract (
+// 	v0.18.1
+// 	v0.18.0
+// 	v0.17.1
+// 	v0.17.0
+// 	v0.16.5
+// 	v0.16.4
+// 	v0.16.3
+// 	v0.16.2
+// 	v0.16.1
+// 	v0.16.0
 
-	v0.15.2
-	v0.15.1
-	v0.15.0
+// 	v0.15.2
+// 	v0.15.1
+// 	v0.15.0
 
-	v0.14.7
-	v0.14.6
-	v0.14.6
-	v0.14.5
-	v0.14.4
-	v0.14.3
-	v0.14.2
-	v0.14.1
+// 	v0.14.7
+// 	v0.14.6
+// 	v0.14.6
+// 	v0.14.5
+// 	v0.14.4
+// 	v0.14.3
+// 	v0.14.2
+// 	v0.14.1
 
-	v0.14.0
-	v0.13.0-beta2
-	v0.13.0-beta
-)
+// 	v0.14.0
+// 	v0.13.0-beta2
+// 	v0.13.0-beta
+// )
 
 go 1.17
+
+replace github.com/btcsuite/btcd => github.com/shahzeb8285/btcd v0.0.0-20250125043400-95e37cbefa13
